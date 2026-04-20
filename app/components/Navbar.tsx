@@ -1,11 +1,12 @@
 "use client";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { SignInButton, UserButton, useAuth } from "@clerk/nextjs";
 
 export default function Navbar() {
   const pathname = usePathname();
+  const { isSignedIn } = useAuth(); // Clerk ka smart checker
   
-  // Dashboard aur Connect page par hum ye navbar nahi dikhayenge (unka apna layout hoga)
   if (pathname === "/dashboard" || pathname === "/connect") return null;
 
   return (
@@ -23,9 +24,19 @@ export default function Navbar() {
         <Link href="/pricing" className="hover:text-white transition-colors">Pricing</Link>
       </div>
 
-      <Link href="/login" className="px-6 py-2 text-sm font-medium border border-white/10 rounded-full hover:bg-white/5 transition-all">
-        Login
-      </Link>
+      <div>
+        {/* Agar login nahi hai, toh Login button dikhao */}
+        {!isSignedIn ? (
+          <SignInButton mode="modal">
+            <button className="px-6 py-2 text-sm font-medium border border-white/10 rounded-full hover:bg-white/5 transition-all">
+              Login
+            </button>
+          </SignInButton>
+        ) : (
+          /* Agar login hai, toh Profile Photo dikhao */
+          <UserButton />
+        )}
+      </div>
     </nav>
   );
 }

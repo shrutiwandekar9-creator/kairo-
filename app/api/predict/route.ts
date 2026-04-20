@@ -5,13 +5,19 @@ export async function POST(request: Request) {
     const body = await request.json();
     const { platform, niche } = body;
 
-    // Secret file se API key uthana
     const apiKey = process.env.GEMINI_API_KEY;
 
-    // AI ko instruction dena (Prompt Engineering)
-    const prompt = `You are Kairo, a highly advanced AI social media manager. Provide a viral content strategy for a creator making content about "${niche}" on "${platform}". Return ONLY a raw JSON object with no markdown formatting. The JSON must have these exact keys: "title" (string), "caption" (string), "bestTime" (string), "actionableAdvice" (string).`;
+    // The Ultimate VidIQ-Style Prompt
+    const prompt = `You are Kairo, a highly advanced YouTube/Social Media SEO Analyzer (like VidIQ). Analyze the niche "${niche}" on "${platform}". Return ONLY a valid, raw JSON object (no markdown, no backticks). The JSON must exactly match this structure:
+    {
+      "title": "A highly clickable, SEO-optimized title",
+      "seoScore": "A number between 85 and 99",
+      "viralTags": ["tag1", "tag2", "tag3", "tag4", "tag5"],
+      "videoHook": "A 5-second script for the beginning of the video to retain viewers",
+      "bestTime": "Optimal posting time",
+      "actionableAdvice": "One sentence strategy"
+    }`;
 
-    // Asli Gemini AI ko call karna!
     const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -23,7 +29,6 @@ export async function POST(request: Request) {
     const data = await response.json();
     const aiText = data.candidates[0].content.parts[0].text;
 
-    // AI ke diye hue response ko saaf karke JSON mein badalna
     const cleanJson = aiText.replace(/```json/g, '').replace(/```/g, '').trim();
     const aiSuggestion = JSON.parse(cleanJson);
 
