@@ -1,3 +1,4 @@
+import Link from "next/link";
 export default function ConnectSocials() {
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-[#050505] text-gray-200 font-sans relative overflow-hidden px-4">
